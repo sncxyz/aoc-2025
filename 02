@@ -1,0 +1,75 @@
+import run;
+
+fn main() run.day 2 parse part_1 part_2;
+
+fn parse(input) input
+    split ","
+    map (\(range) range 
+        split "-"
+        map int.1
+        map Num.new
+        collect
+    )
+    flat_map split_range
+    collect;
+
+fn split_range(range) range[0].len to (range[1].len + 1)
+    map (\(n) Range.new(10 ^ (n - 1), 10 ^ n - 1))
+    collect
+    map_index 0 (\(first) first start range[0])
+    map_index -1 (\(last) last end range[1]);
+
+fn part_1(ranges) ranges
+    filter (\(range) range.len mod 2 == 0)
+    flat_map (\(range) get_invalid_n(range, range.len // 2))
+    sum;
+
+fn part_2(ranges) ranges flat_map get_invalid sum;
+
+fn get_invalid(range) factors(range.len)
+    flat_map (\(f) get_invalid_n(range, f))
+    collect Set.new()
+    list;
+
+fn factors(x) 1 to (x // 2 + 1)
+    filter \(f) x mod f == 0;
+
+fn get_invalid_n(range, n) get_bound(range.start, n, <.2, 1)
+    to (get_bound(range.end, n, >.2, -1) + 1)
+    map \(seed) seed -> repeat n range.len;
+
+fn get_bound(x, n, cmp, d) x
+    first_n_digits n
+    -> fix_bound x n cmp d;
+
+fn fix_bound(seed, x, n, cmp, d) seed
+    -> repeat n x.len
+    -> cmp x.val
+    then (seed + d)
+    or seed;
+
+fn repeat(x, n, m) 1 to (m // n)
+    fold x \(acc, _) acc * (10 ^ n) + x;
+
+fn num_digits(x) x log10 + 1;
+
+rec Num(val, len);
+
+impl Num {
+    fn new(val) Self(val, len = num_digits(val));
+
+    self first_n_digits n = self.val // (10 ^ (self.len - n));
+}
+
+rec Range(start, end, len);
+
+impl Range {
+    fn new(start, end) Self(
+        start = Num.new(start),
+        end = Num.new(end),
+        len = num_digits(start),
+    );
+
+    self start x = Self(start = x, end = self.end, len = self.len);
+    self end x = Self(start = self.start, end = x, len = self.len);
+}

@@ -1,0 +1,27 @@
+import run;
+
+fn main() run.day 1 parse part_1 part_2;
+
+fn parse(input) input
+    split "\n"
+    map (\(line) line[0] is 'R'
+        then 1
+        or -1
+        * (line[1 to] int)
+    )
+    collect;
+
+fn part_1(changes) changes
+    -> part_* \(n, change) n + change mod 100 is 0 int;
+
+fn part_2(changes) changes
+    -> part_* \(n, change) change > 0
+        then (n + change)
+        or (100 - n mod 100 - change)
+        // 100;
+
+fn part_*(changes, f) changes
+    fold [50, 0] (\(acc, change) 
+        [acc[0] + change mod 100, acc[1] + f(acc[0], change)]
+    )
+    index 1;

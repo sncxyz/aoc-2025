@@ -1,0 +1,61 @@
+use std.io;
+
+op day;
+
+impl All {
+    self day shared part_1 part_2 = self day shared part_1 part_2 "main";
+
+    self day shared part_1 part_2 input {
+        println("Input:  " + input);
+
+        self str=;
+        if self len < 2 {
+            self = "0" + self;
+        }
+
+        input = io.read_file("inputs/" + self + "/" + input);
+
+        start := io.clock();
+        input = shared(input);
+        end := io.clock();
+        shared_time := end - start -> show_time;
+
+        println("Shared: " + (" " * 20) + shared_time);
+
+        start = io.clock();
+        part_1 = part_1(input);
+        end = io.clock();
+        part_1_time := end - start -> show_time;
+
+        part_1 str=;
+        pad := 20 - (part_1 len) max 1;
+
+        println("Part 1: " + part_1 + (" " * pad) + part_1_time);
+
+        if part_2 {
+            start = io.clock();
+            part_2 = part_2(input);
+            end = io.clock();
+            part_2_time := end - start -> show_time;
+
+            part_2 str=;
+            pad = 20 - (part_2 len) max 1;
+
+            println("Part 2: " + part_2 + (" " * pad) + part_2_time);
+        }
+    }
+}
+
+fn show_time(time) {
+    if time >= 1. {
+        return dp(time, 3) str + 's';
+    }
+    time *= 1000.;
+    if time >= 1. {
+        return dp(time, 3) str + "ms";
+    }
+    time *= 1000.;
+    return dp(time, 3) str + "μs";
+}
+
+fn dp(x, n) x * (10. ^ float(n)) round / (10. ^ float(n));

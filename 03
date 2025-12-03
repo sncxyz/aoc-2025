@@ -1,0 +1,37 @@
+import run;
+
+fn main() run.day 3 parse part_1 part_2;
+
+fn parse(input) input
+    split "\n"
+    map (\(line) line
+        map str.1
+        map int.1
+        collect
+    )
+    collect;
+
+fn part_1(banks) part_*(banks, 2);
+
+fn part_2(banks) part_*(banks, 12);
+
+fn part_*(banks, n) banks
+    map (\(bank) get_digits(bank, n)[1])
+    sum;
+
+fn get_digits(bank, n) bank len - n
+    to (bank len)
+    fold [0, 0] \(acc, end) bank[acc[0] to (end + 1)]
+        -> next_digit
+        -> add_digit acc;
+
+fn next_digit(bank) bank
+    enumerate
+    fold [0, 0] \(acc, digit) digit[1] > acc[1]
+        then digit
+        or acc;
+
+fn add_digit(digit, acc) [
+    acc[0] + digit[0] + 1,
+    acc[1] * 10 + digit[1],
+];

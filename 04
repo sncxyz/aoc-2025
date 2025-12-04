@@ -1,0 +1,44 @@
+import run, nd;
+
+use nd.(Matrix, vector.adj);
+
+fn main() run.day 4 parse part_1 part_2;
+
+fn parse(input) Matrix.new(input split "\n");
+
+fn part_1(diagram) diagram
+    -> paper_positions
+    map (\(pos) count adj_paper(diagram, pos))
+    filter (< 4)
+    count;
+
+fn part_2(diagram) {
+    counts := Matrix.init(diagram dim, 0);
+    rem := [];
+    for pos in diagram -> paper_positions {
+        counts[pos] = count adj_paper(diagram, pos);
+        if counts[pos] < 4 {
+            rem push= pos;
+        }
+    }
+    count := 0;
+    while rem empty? not {
+        pos := rem last;
+        rem pop=;
+        diagram[pos] = '.';
+        count += 1;
+        for p in adj_paper(diagram, pos) {
+            counts[p] -= 1;
+            if counts[p] == 3 {
+                rem push= p;
+            }
+        }
+    }
+    return count;
+}
+
+fn paper_positions(diagram) diagram positions -> filter_paper(diagram);
+
+fn adj_paper(diagram, pos) adj() map (+ pos) -> filter_paper(diagram);
+
+fn filter_paper(diagram) \(ps) ps filter \(p) diagram get p is '@';

@@ -1,0 +1,67 @@
+import run;
+
+fn main() run.day 6 parse part_1 part_2;
+
+fn parse(input) input split "\n" collect;
+
+fn part_1(lines) {
+    numbers := lines
+        take (lines len - 1)
+        map split_space
+        map (\(ns) ns map int.1)
+        collect;
+    operators := lines[-1] -> split_space;
+    return 0 to (operators len)
+        map (\(i) numbers
+            map (\(ns) ns[i])
+            reduce (operators[i] == "+" then +.2 or *.2)
+        )
+        sum;
+}
+
+fn part_2(lines) {
+    longest := lines map len.1 seq_max;
+    last := lines len - 1;
+    current := nil;
+    f := nil;
+    total := 0;
+    for i in 0 to longest {
+        if 0 to (lines len) all \(j) lines[j][i] == ' ' {
+            total += current;
+        } else {
+            arg := lines[0 to last]
+                map (\(line) line[i])
+                filter (\(c) c != ' ')
+                map (\(c) c str int)
+                reduce (\(a, b) a * 10 + b);
+            if lines[last][i] == ' ' {
+                current = f(current, arg);
+            } else {
+                current = arg;
+                f = lines[last][i] == '+' then +.2 or *.2;
+            }
+        }
+    }
+    return total + current;
+}
+
+fn split_space(line) {
+    parts := [];
+    i := 0;
+    space := true;
+    for j, c in line {
+        if c == ' ' {
+            if not space {
+                parts push= line[i to j];
+                space = true;
+            }
+        } else if space {
+            i = j;
+            space = false;
+        }
+    }
+    if not space {
+        parts push= line[i to];
+    }
+    return parts;
+}

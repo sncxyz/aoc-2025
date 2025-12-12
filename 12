@@ -1,0 +1,36 @@
+import run;
+
+fn main() run.day 12 parse part_1 nil;
+
+fn parse(input) {
+    parts := input split "\n\n" collect;
+    regions := parts last split "\n" map parse_region collect;
+    shapes := parts pop map parse_shape collect;
+    return [shapes, regions];
+}
+
+fn parse_shape(lines) lines filter (\(c) c == '#') count;
+
+fn parse_region(line) {
+    parts := line split ": " collect;
+    dim := parts[0] split "x" map int.1 collect;
+    w := dim[0];
+    h := dim[1];
+    counts := parts[1] split " " map int.1 collect;
+    return Region(w, h, counts);
+}
+
+fn part_1(input) {
+    shapes := input[0];
+    regions := input[1];
+
+    return regions
+        filter (\(region) region.w * region.h >= (
+            region.counts zip_with shapes (\(c, s) c * s) sum
+        ) and (
+            region.w // 3 * (region.h // 3) >= (region.counts sum)
+        ))
+        count;
+}
+
+rec Region(w, h, counts);

@@ -1,0 +1,70 @@
+import run;
+
+fn main() run.day 11 parse part_1 part_2;
+
+fn parse(input) {
+    adj := Map.new();
+    for line in input split "\n" {
+        parts := line split ": " collect;
+        neighbours := [];
+        for b in parts[1] split " " {
+            neighbours push= b str;
+        }
+        adj[parts[0] str] = neighbours;
+    }
+    for v in adj values flatten {
+        if adj contains v not {
+            adj[v] = [];
+        }
+    }
+    vertices := top_sort(adj);
+    indices := vertices enumerate map (\(x) [x[1], x[0]]) collect Map.new();
+    return Graph(adj, vertices, indices);
+}
+
+fn part_1(graph) num_paths(graph, "you", "out");
+
+fn part_2(graph) graph.indices["dac"] < graph.indices["fft"]
+    and (num_paths(graph, "svr", "dac") * num_paths(graph, "dac", "fft") * num_paths(graph, "fft", "out"))
+    or (num_paths(graph, "svr", "fft") * num_paths(graph, "fft", "dac") * num_paths(graph, "dac", "out"));
+
+fn top_sort(adj) {
+    counts := adj keys map (\(v) [v, 0]) collect Map.new();
+    in_deg := counts;
+    for v in adj keys {
+        for u in adj[v] {
+            in_deg[u] += 1;
+        }
+    }
+    next := in_deg pairs filter_map (\(pair) pair[1] == 0 then pair[0]) collect;
+    sorted := [];
+    while next len > 0 {
+        new := [];
+        for v in next {
+            sorted push= v;
+            for u in adj[v] {
+                counts[u] += 1;
+                if counts[u] == in_deg[u] {
+                    new push= u;
+                }
+            }
+        }
+        next = new;
+    }
+    return sorted;
+}
+
+fn num_paths(graph, start, end) {
+    counts := [0] * (graph.vertices len);
+    start = graph.indices[start];
+    end = graph.indices[end];
+    counts[start] = 1;
+    for i in start to end {
+        for v in graph.adj[graph.vertices[i]] {
+            counts[graph.indices[v]] += counts[i];
+        }
+    }
+    return counts[end];
+}
+
+rec Graph(adj, vertices, indices);

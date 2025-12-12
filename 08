@@ -1,0 +1,62 @@
+import run, nd;
+
+use nd.Vec3;
+
+let n = 1000;
+
+fn main() run.day 8 parse part_1 part_2;
+
+fn parse(input) {
+    boxes := input
+        split "\n"
+        map (\(line) line split "," map int.1 collect)
+        map (\(box) Vec3(x = box[0], y = box[1], z = box[2]))
+        collect;
+    pairs := Set.new();
+    for i in 0 to (boxes len) {
+        for j in i + 1 to (boxes len) {
+            dist := boxes[i] abs_diff boxes[j] len_sq;
+            pairs insert= Pair(dist, i, j);
+        }
+    }
+    return [boxes, pairs list];
+}
+
+fn part_1(input) {
+    parents := part_*(input[0], input[1][0 to n]);
+    counts := [0] * (input[0] len);
+    for box in parents {
+        while parents[box] != box {
+            box = parents[box];
+        }
+        counts[box] += 1;
+    }
+    return counts sort rev take 3 product;
+}
+
+fn part_2(input) part_*(input[0], input[1]);
+
+fn part_*(boxes, pairs) {
+    parents := 0 to (boxes len) collect;
+    circuits := boxes len;
+    for pair in pairs {
+        i := pair.i;
+        while parents[i] != i {
+            i = parents[i];
+        }
+        j := pair.j;
+        while parents[j] != j {
+            j = parents[j];
+        }
+        if i != j {
+            parents[i] = j;
+            circuits -= 1;
+            if circuits == 1 {
+                return boxes[pair.i].x * boxes[pair.j].x;
+            }
+        }
+    }
+    return parents;
+}
+
+rec Pair(dist, i, j);

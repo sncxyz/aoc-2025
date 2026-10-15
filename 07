@@ -8,7 +8,7 @@ fn parse(input) input
 
 fn part_1(manifold) {
     width := manifold[0] len;
-    s := manifold[0] position (\(c) c == 'S');
+    s := manifold[0] position \c (c == 'S');
     beams := [false] * width;
     beams[s] = true;
     total := 0;
@@ -27,7 +27,7 @@ fn part_1(manifold) {
 
 fn part_2(manifold) {
     width := manifold[0] len;
-    s := manifold[0] position (\(c) c == 'S');
+    s := manifold[0] position \c (c == 'S');
     counts := [1] * width;
     for layer in manifold skip 1 rev {
         for i in 0 to width {

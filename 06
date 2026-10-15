@@ -8,12 +8,12 @@ fn part_1(lines) {
     numbers := lines
         take (lines len - 1)
         map split_space
-        map (\(ns) ns map int.1)
+        map \ns (ns map int.1)
         collect;
     operators := lines[-1] -> split_space;
     return 0 to (operators len)
-        map (\(i) numbers
-            map (\(ns) ns[i])
+        map \i (numbers
+            map \ns ns[i]
             reduce (operators[i] == "+" then +.2 or *.2)
         )
         sum;
@@ -26,14 +26,14 @@ fn part_2(lines) {
     f := nil;
     total := 0;
     for i in 0 to longest {
-        if 0 to (lines len) all \(j) lines[j][i] == ' ' {
+        if 0 to (lines len) all \j (lines[j][i] == ' ') {
             total += current;
         } else {
             arg := lines[0 to last]
-                map (\(line) line[i])
-                filter (\(c) c != ' ')
-                map (\(c) c str int)
-                reduce (\(a, b) a * 10 + b);
+                map \line line[i]
+                filter \c (c != ' ')
+                map \c (c str int)
+                reduce \(a, b) (a * 10 + b);
             if lines[last][i] == ' ' {
                 current = f(current, arg);
             } else {

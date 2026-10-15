@@ -9,7 +9,7 @@ fn parse(input) {
     return [shapes, regions];
 }
 
-fn parse_shape(lines) lines filter (\(c) c == '#') count;
+fn parse_shape(lines) lines filter \c (c == '#') count;
 
 fn parse_region(line) {
     parts := line split ": " collect;
@@ -25,8 +25,8 @@ fn part_1(input) {
     regions := input[1];
 
     return regions
-        filter (\(region) region.w * region.h >= (
-            region.counts zip_with shapes (\(c, s) c * s) sum
+        filter \region (region.w * region.h >= (
+            region.counts zip_with shapes *.2 sum
         ) and (
             region.w // 3 * (region.h // 3) >= (region.counts sum)
         ))

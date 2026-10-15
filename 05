@@ -3,12 +3,12 @@ import run;
 fn main() run.day 5 shared part_1 part_2;
 
 fn shared(input) {
-    parts := input split "\n\n" map (\(part) part split "\n") collect;
+    parts := input split "\n\n" map \part (part split "\n") collect;
     ranges := parts[0]
-        map (\(range) range split "-" map int.1 collect)
-        map (\(range) range[0]: range[1])
+        map \range (range split "-" map int.1 collect)
+        map \range (range[0]: range[1])
         collect
-        sort_by_key \(range) range.a;
+        sort_by_key \range range.a;
     ids := parts[1]
         map int.1
         collect
@@ -21,7 +21,7 @@ fn shared(input) {
     }
 
     ranges = ranges
-        filter (\(range) range.a <= range.b)
+        filter \range (range.a <= range.b)
         collect;
 
     return Database(ranges, ids);
@@ -39,6 +39,6 @@ fn part_1(db) {
     return total;
 }
 
-fn part_2(db) db.ranges map (\(range) range.b - range.a + 1) sum;
+fn part_2(db) db.ranges map \range (range.b - range.a + 1) sum;
 
 rec Database(ranges, ids);

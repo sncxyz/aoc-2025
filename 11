@@ -18,7 +18,7 @@ fn parse(input) {
         }
     }
     vertices := top_sort(adj);
-    indices := vertices enumerate map (\(x) [x[1], x[0]]) collect Map.new();
+    indices := vertices enumerate map \x [x[1], x[0]] collect Map.new();
     return Graph(adj, vertices, indices);
 }
 
@@ -29,14 +29,14 @@ fn part_2(graph) graph.indices["dac"] < graph.indices["fft"]
     or (num_paths(graph, "svr", "fft") * num_paths(graph, "fft", "dac") * num_paths(graph, "dac", "out"));
 
 fn top_sort(adj) {
-    counts := adj keys map (\(v) [v, 0]) collect Map.new();
+    counts := adj keys map \v [v, 0] collect Map.new();
     in_deg := counts;
     for v in adj keys {
         for u in adj[v] {
             in_deg[u] += 1;
         }
     }
-    next := in_deg pairs filter_map (\(pair) pair[1] == 0 then pair[0]) collect;
+    next := in_deg pairs filter_map \pair (pair[1] == 0 then pair[0]) collect;
     sorted := [];
     while next len > 0 {
         new := [];

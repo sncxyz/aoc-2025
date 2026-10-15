@@ -9,8 +9,8 @@ fn main() run.day 8 parse part_1 part_2;
 fn parse(input) {
     boxes := input
         split "\n"
-        map (\(line) line split "," map int.1 collect)
-        map (\(box) Vec3(x = box[0], y = box[1], z = box[2]))
+        map \line (line split "," map int.1 collect)
+        map \box Vec3(x = box[0], y = box[1], z = box[2])
         collect;
     pairs := Set.new();
     for i in 0 to (boxes len) {
